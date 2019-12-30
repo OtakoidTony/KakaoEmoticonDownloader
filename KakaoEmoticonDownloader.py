@@ -1,7 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
 import urllib.request
 import os
 from tqdm import tqdm
@@ -19,8 +17,14 @@ class KakaoEmoticon:
         title = soup.find('meta', attrs={'property': "og:title"}).get('content')
         sample = soup.find('meta', attrs={'property': "og:image"}).get('content')
         item_code = int(
-            str(soup).split('item_code')[1].split('}')[0].replace(' ', '').replace('\n', '').replace('\'', '').replace(
-                ':', ''))
+            str(soup)
+                .split('item_code')[1]
+                .split('}')[0]
+                .replace(' ', '')
+                .replace('\n', '')
+                .replace('\'', '')
+                .replace(':', '')
+        )
         res = requests.get("https://e.kakao.com/detail/thumb_url?item_code=" + str(item_code))
         res = res.json()
         self.item_code = item_code
@@ -38,10 +42,31 @@ class KakaoEmoticon:
             urllib.request.urlretrieve(i, output + str(temp) + '.png')
             temp = temp + 1
 
-def main(string):
+
+def download(string):
     KakaoEmoticon(string).download()
 
+def title(string):
+    print(KakaoEmoticon(string).title)
+
+def sample(string):
+    print(KakaoEmoticon(string).sample)
+
+help = """
+Command:
+    -h or --help     : Display commands list.
+    -d or --download : Download Kakao Emoticons.
+    -t or --title    : Display emoticon's title.
+    -s or --sample   : Display sample image link."""
+
 if __name__ == "__main__":
-    main(sys.argv[1])
-
-
+    if (sys.argv[1] == '-d' or sys.argv[1] == "--download"):
+        download(sys.argv[2])
+    elif (sys.argv[1] == '-h' or sys.argv[1] == "--help"):
+        print(help)
+    elif (sys.argv[1] == '-s' or sys.argv[1] == "--sample"):
+        sample(sys.argv[2])
+    elif (sys.argv[1] == '-t' or sys.argv[1] == "--title"):
+        title(sys.argv[2])
+    else:
+        print("Command Not found : " + sys.argv[2])
