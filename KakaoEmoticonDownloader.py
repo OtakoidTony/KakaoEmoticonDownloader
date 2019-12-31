@@ -4,6 +4,7 @@ import urllib.request
 import os
 from tqdm import tqdm
 import sys
+import platform
 
 class KakaoEmoticon:
     def __init__(self, url):
@@ -33,14 +34,24 @@ class KakaoEmoticon:
         self.sample = sample
 
     def download(self):
-        temp = 1
-        output = os.getcwd() + "\\" + self.title + "\\"
-        if not os.path.isdir(output):
-            os.makedirs(output)
+        if platform.system() == 'Windows':
+            temp = 1
+            output = os.getcwd() + "\\" + self.title + "\\"
+            if not os.path.isdir(output):
+                os.makedirs(output)
 
-        for i in tqdm(self.imageURL):
-            urllib.request.urlretrieve(i, output + str(temp) + '.png')
-            temp = temp + 1
+            for i in tqdm(self.imageURL):
+                urllib.request.urlretrieve(i, output + str(temp) + '.png')
+                temp = temp + 1
+        else:
+            temp = 1
+            output = os.getcwd() + "/" + self.title + "/"
+            if not os.path.isdir(output):
+                os.makedirs(output)
+
+            for i in tqdm(self.imageURL):
+                urllib.request.urlretrieve(i, output + str(temp) + '.png')
+                temp = temp + 1
 
 
 def download(string):
@@ -70,3 +81,4 @@ if __name__ == "__main__":
         title(sys.argv[2])
     else:
         print("Command Not found : " + sys.argv[2])
+
