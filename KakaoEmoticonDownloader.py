@@ -6,6 +6,29 @@ from tqdm import tqdm
 import sys
 import platform
 
+class KakaoEmoticonJSON:
+    def __init__(self, itemcode):
+        self.imageURL = requests.get("https://e.kakao.com/detail/thumb_url?item_code=" + str(item_code)).json()['body']
+    def download(self):
+        print("Downloading from " + self.url + "\n")
+        if platform.system() == 'Windows':
+            temp = 1
+            output = os.getcwd() + "\\" + self.title + "\\"
+            if not os.path.isdir(output):
+                os.makedirs(output)
+
+            for i in tqdm(self.imageURL):
+                urllib.request.urlretrieve(i, output + str(temp) + '.png')
+                temp = temp + 1
+        else:
+            temp = 1
+            output = os.getcwd() + "/" + self.title + "/"
+            if not os.path.isdir(output):
+                os.makedirs(output)
+
+            for i in tqdm(self.imageURL):
+                urllib.request.urlretrieve(i, output + str(temp) + '.png')
+                temp = temp + 1
 
 class KakaoEmoticon:
     def __init__(self, url):
@@ -61,6 +84,8 @@ class KakaoEmoticon:
                 urllib.request.urlretrieve(i, output + str(temp) + '.png')
                 temp = temp + 1
 
+def force_download(string):
+    KakaoEmoticonJSON(string).download()
 
 def download(string):
     KakaoEmoticon(string).download()
@@ -77,13 +102,15 @@ Command:
     -d or --download : Download Kakao Emoticons.
     -t or --title    : Display emoticon's title.
     -s or --sample   : Display sample image link.
-
+    -i or --itemcode : Download Kakao Emoticon with itemcode.
+    
 Example:
     KakaoEmoticonDownloader -d the-girl-in-pajamas-ver-2
     KakaoEmoticonDownloader -d "the girl in pajamas ver 2"
     KakaoEmoticonDownloader -d e.kakao.com/t/the-girl-in-pajamas-ver-2
     KakaoEmoticonDownloader -d http://e.kakao.com/t/the-girl-in-pajamas-ver-2
-    KakaoEmoticonDownloader -d https://e.kakao.com/t/the-girl-in-pajamas-ver-2"""
+    KakaoEmoticonDownloader -d https://e.kakao.com/t/the-girl-in-pajamas-ver-2
+    KakaoEmoticonDownloader -i 2220381"""
 
 prog = """
 Kakao Emoticon Downloader
@@ -96,6 +123,8 @@ This program cannot be used for commercial purposes."""
 if __name__ == "__main__":
     if len(sys.argv) != 1:
         if (sys.argv[1] == '-d' or sys.argv[1] == "--download"):
+            force_download(sys.argv[2])
+        elif (sys.argv[1] == '-i' or sys.argv[1] == "--itemcode"):
             download(sys.argv[2])
         elif (sys.argv[1] == '-h' or sys.argv[1] == "--help"):
             print(help)
