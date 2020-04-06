@@ -8,12 +8,13 @@ import platform
 
 class KakaoEmoticonJSON:
     def __init__(self, itemcode):
-        self.imageURL = requests.get("https://e.kakao.com/detail/thumb_url?item_code=" + str(item_code)).json()['body']
+        self.itemcode = itemcode
+        self.imageURL = requests.get("https://e.kakao.com/detail/thumb_url?item_code=" + str(itemcode)).json()['body']
     def download(self):
-        print("Downloading from " + self.url + "\n")
+        print("Downloading from Kakao Emoticon Database"+ "\n")
         if platform.system() == 'Windows':
             temp = 1
-            output = os.getcwd() + "\\" + self.title + "\\"
+            output = os.getcwd() + "\\" + str(self.itemcode) + "\\"
             if not os.path.isdir(output):
                 os.makedirs(output)
 
@@ -22,7 +23,7 @@ class KakaoEmoticonJSON:
                 temp = temp + 1
         else:
             temp = 1
-            output = os.getcwd() + "/" + self.title + "/"
+            output = os.getcwd() + "/" + str(self.itemcode) + "/"
             if not os.path.isdir(output):
                 os.makedirs(output)
 
@@ -114,18 +115,16 @@ Example:
 
 prog = """
 Kakao Emoticon Downloader
-
 This program is for using paid kakao emoticon in other messenger
 so if you didn't pay their emoticons, don't use this program.
-
 This program cannot be used for commercial purposes."""
 
 if __name__ == "__main__":
     if len(sys.argv) != 1:
         if (sys.argv[1] == '-d' or sys.argv[1] == "--download"):
-            force_download(sys.argv[2])
-        elif (sys.argv[1] == '-i' or sys.argv[1] == "--itemcode"):
             download(sys.argv[2])
+        elif (sys.argv[1] == '-i' or sys.argv[1] == "--itemcode"):
+            force_download(sys.argv[2])
         elif (sys.argv[1] == '-h' or sys.argv[1] == "--help"):
             print(help)
         elif (sys.argv[1] == '-s' or sys.argv[1] == "--sample"):
@@ -136,5 +135,3 @@ if __name__ == "__main__":
             print("Command Not found : " + sys.argv[2])
     else:
         print(prog+"\n"+help)
-
-
